@@ -10,19 +10,18 @@ It aims to optimize revenue while maintaining fairness and transparency in prici
 
 ## 🚀 Models Developed
 
+The Models have 1 day tumbling window for the live data stream but it  can be tunned from anywhere 30 minutes to 2 days to get accurate restults.
+
 ### **✅ Model 1: Linear Demand-Based Pricing**
 
+
 - **Version 1:** Price increases linearly with demand:
-  \[
-  \text{Price} = \text{Base Price} + \alpha \times \text{Demand}
-  \]
+   Price = Privous Price + alpha * Demand
   where **Demand = Occupancy / Capacity** over 30-minute windows.
 
 - **Version 2 (Refined):** Uses **constant base price**, adjusts **only the demand-based component**:
-  \[
-  \text{Price} = \text{Base Price} \times (1 + \lambda \times \text{Normalized Demand})
-  \]
-  yielding **more stable and realistic pricing**, reducing volatility.
+  Price = Base Price + alpha * Demand
+  yielding **more stable and realistic pricing**.
 
 ---
 
@@ -32,17 +31,18 @@ Incorporates:
 - **Occupancy Rate (Demand)**
 - **Traffic Level (Low/Avg/High)**
 - **Vehicle Type Weighting (bike, car, truck)**
+- **Normalised Queue Length**
 - **Special Days**
 
 The demand formula:
-\[
-\text{Demand} = \alpha \times \text{Occupancy Rate} - \gamma \times \text{Traffic} + \delta \times \text{Special Day} + \text{Vehicle Factor}
-\]
+Demand = alpha * (Occupancy Rate)
+- gamma * (Traffic Level)
++ delta * (Special Day)
++ Vehicle Factor
 
 Normalized and applied:
-\[
-\text{Price} = \text{Base Price} \times (1 + \lambda \times \text{Normalized Demand})
-\]
+Price = Base Price * (1 + lambda * Normalized Demand)
+
 
 ✅ **All parameters (`base_price`, `alpha`, `gamma`, `delta`, `lambda_`) are currently hardcoded for stability during development** but can be **tuned dynamically** for smoother, highly accurate pricing adjustments in production.
 
@@ -69,9 +69,10 @@ Normalized and applied:
 - **Pathway** (real-time stream processing and windowing)
 - **Bokeh + Panel** (interactive plotting and dashboards)
 - **Pandas, NumPy** (data preprocessing)
-- **Jupyter/Colab** (development environment)
+- **Google Colab** (development environment)
 
 ---
+
 
 ## 🖼️ Architecture Diagram
 
@@ -79,10 +80,10 @@ Normalized and applied:
 flowchart LR
     A[Parking Data CSV / Live Stream] --> B[Pathway Replay CSV]
     B --> C[Preprocessing & Feature Engineering]
-    C --> D[Windowing (Tumbling/Sliding)]
-    D --> E[Model 1 / Model 2 Pricing]
+    C --> D[Windowing Tumbling Sliding]
+    D --> E[Model 1 and Model 2 Pricing]
     E --> F[Price Data Table]
     F --> G[Bokeh Interactive Visualizations]
     G --> H[Panel Dashboard]
-    F --> I[Competitor Mapping & Comparison]
+    F --> I[Competitor Mapping and Comparison]
     I --> G
